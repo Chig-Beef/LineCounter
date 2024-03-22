@@ -4,21 +4,19 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"strings"
 )
 
 var errors int
 var totalLine int
-var fileType string
+var fileTypes []string
 
 func main() {
 	args := os.Args
-	if len(args) != 3 {
-		log.Panicln("error: too many or too little sys args")
-	}
 
-	fileType = args[1]
-	path := args[2]
+	var path string
+	fileTypes, path = parseArgs(args)
 
 	files, err := os.ReadDir(path)
 	if err != nil {
@@ -33,6 +31,16 @@ func main() {
 	}
 
 	fmt.Println("Total:", totalLine, "with", errors, "errors.")
+}
+
+func parseArgs(args []string) ([]string, string) {
+	if len(args) < 3 {
+		log.Fatal(
+			"line counter takes a minimum of 2 parameters.\n" +
+				"lc fileTypes... path",
+		)
+	}
+	return args[1 : len(args)-1], args[len(args)-1]
 }
 
 func getFileType(fileName string) string {
@@ -56,7 +64,7 @@ func count(file os.DirEntry, path string) {
 		return
 	}
 
-	if getFileType(file.Name()) != fileType {
+	if !slices.Contains(fileTypes, getFileType(file.Name())) {
 		return
 	}
 
