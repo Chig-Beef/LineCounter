@@ -12,8 +12,12 @@ var errors int
 var totalLine int
 var fileTypes []string
 
+var giveDetails bool
+
 func main() {
 	args := os.Args
+
+	args = removeFlags(args)
 
 	var path string
 	fileTypes, path = parseArgs(args)
@@ -73,5 +77,29 @@ func count(file os.DirEntry, path string) {
 		errors++
 		return
 	}
-	totalLine += len(strings.Split(string(data), "\n"))
+
+	lineCount := len(strings.Split(string(data), "\n"))
+
+	if giveDetails {
+		fmt.Println(path, lineCount)
+	}
+
+	totalLine += lineCount
+}
+
+func removeFlags(args []string) []string {
+	newArgs := []string{}
+
+	for _, arg := range args {
+		if arg[0] != '-' {
+			newArgs = append(newArgs, arg)
+		} else {
+			switch arg {
+			case "-details":
+				giveDetails = true
+			}
+		}
+	}
+
+	return newArgs
 }

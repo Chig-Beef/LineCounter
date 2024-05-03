@@ -16,3 +16,6 @@ Total: 500 with 0 errors.
 > lc js html css ../../JavaScript/MyWebsite
 Total: 78 with 1 errors.
 ```
+
+Another feature is the `-details` flag.
+By using this flag you will get per-file line amounts.
